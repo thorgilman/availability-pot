@@ -12,5 +12,4 @@ import net.corda.core.identity.Party
 @BelongsToContract(DataContract::class)
 data class DataState(val data: String,
                      val sourceParty: Party,
-                     val destParty: Party,
-                     override val participants: List<AbstractParty> = listOf(sourceParty, destParty)) : ContractState
+                     override val participants: List<AbstractParty> = listOf(sourceParty)) : ContractState

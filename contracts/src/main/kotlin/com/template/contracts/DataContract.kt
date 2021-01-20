@@ -22,5 +22,6 @@ class DataContract : Contract {
     // Used to indicate the transaction's intent.
     interface Commands : CommandData {
         class Create : Commands
+        class Update : Commands
     }
 }

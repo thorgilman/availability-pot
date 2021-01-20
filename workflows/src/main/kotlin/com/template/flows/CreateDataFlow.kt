@@ -16,7 +16,7 @@ import net.corda.core.utilities.ProgressTracker
 // *********
 @InitiatingFlow
 @StartableByRPC
-class Initiator(val dataString: String, val destParty: Party) : FlowLogic<SignedTransaction>() {
+class CreateDataFlow(val dataString: String) : FlowLogic<SignedTransaction>() {
     override val progressTracker = ProgressTracker()
 
     @Suspendable
@@ -25,23 +25,22 @@ class Initiator(val dataString: String, val destParty: Party) : FlowLogic<Signed
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
 
         val command = Command(DataContract.Commands.Create(), listOf(ourIdentity).map { it.owningKey })
-        val dataState = DataState("Data", ourIdentity, destParty)
+        val dataState = DataState("Data", ourIdentity)
         val stateAndContract = StateAndContract(dataState, DataContract.ID)
         val txBuilder = TransactionBuilder(notary).withItems(stateAndContract, command)
 
-        txBuilder.verify(serviceHub);
+        txBuilder.verify(serviceHub)
 
         val tx = serviceHub.signInitialTransaction(txBuilder)
-        val targetSession = initiateFlow(destParty)
-        return subFlow(FinalityFlow(tx, targetSession))
+        return subFlow(FinalityFlow(tx, listOf()))
     }
 }
 
-@InitiatedBy(Initiator::class)
-class Responder(val counterpartySession: FlowSession) : FlowLogic<SignedTransaction>() {
-    @Suspendable
-    override fun call(): SignedTransaction {
-
-        return subFlow(ReceiveFinalityFlow(counterpartySession))
-    }
-}
+//@InitiatedBy(Initiator::class)
+//class Responder(val counterpartySession: FlowSession) : FlowLogic<SignedTransaction>() {
+//    @Suspendable
+//    override fun call(): SignedTransaction {
+//
+//        return subFlow(ReceiveFinalityFlow(counterpartySession))
+//    }
+//}

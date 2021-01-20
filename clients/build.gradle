@@ -32,11 +32,11 @@ springBoot {
  * execute your rpc methods in the main method of the client.kt. You can somewhat see this as a quick test of making
  * RPC calls to your nodes.
  */
-task runTemplateClient(type: JavaExec, dependsOn: assemble) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'com.template.ClientKt'
-    args 'localhost:10006', 'user1', 'test'
-}
+//task runTemplateClient(type: JavaExec, dependsOn: assemble) {
+//    classpath = sourceSets.main.runtimeClasspath
+//    main = 'com.template.ClientKt'
+//    args 'localhost:10006', 'user1', 'test'
+//}
 
 /* This task will start the springboot server that connects to your node (via RPC connection). All of the http requests
  * are in the Controller file. You can leave the Server.kt and NodeRPCConnection.kt file untouched for your use.
@@ -44,5 +44,8 @@ task runTemplateClient(type: JavaExec, dependsOn: assemble) {
 task runTemplateServer(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.template.webserver.ServerKt'
-    args '--server.port=10050', '--config.rpc.host=localhost', '--config.rpc.port=10006', '--config.rpc.username=user1', '--config.rpc.password=test'
+    args '--server.port=10050',
+            '--config.rpc.host.0=localhost', '--config.rpc.port.0=10006',
+            '--config.rpc.host.1=localhost', '--config.rpc.port.1=10009',
+            '--config.rpc.username=user1', '--config.rpc.password=test'
 }
